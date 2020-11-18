@@ -40,13 +40,13 @@ class FCOS(nn.Module):
             print("INFO===>success frozen backbone stage1")
 
     def forward(self, x):
-        '''
+        """
         Returns
         list [cls_logits,cnt_logits,reg_preds]  
         cls_logits  list contains five [batch_size,class_num,h,w]
         cnt_logits  list contains five [batch_size,1,h,w]
         reg_preds   list contains five [batch_size,4,h,w]
-        '''
+        """
         C3, C4, C5 = self.backbone(x)
         all_P = self.fpn([C3, C4, C5])
         cls_logits, cnt_logits, reg_preds = self.head(all_P)
@@ -66,12 +66,14 @@ class DetectHead(nn.Module):
             self.config = config
 
     def forward(self, inputs):
-        '''
-        inputs  list [cls_logits,cnt_logits,reg_preds]  
-        cls_logits  list contains five [batch_size,class_num,h,w]  
-        cnt_logits  list contains five [batch_size,1,h,w]  
-        reg_preds   list contains five [batch_size,4,h,w] 
-        '''
+        """
+
+        :param inputs:+list [cls_logits,cnt_logits,reg_preds]
+        cls_logits  list contains five [batch_size,class_num,h,w]
+        cnt_logits  list contains five [batch_size,1,h,w]
+        reg_preds   list contains five [batch_size,4,h,w]
+        :return:
+        """
         cls_logits, coords = self._reshape_cat_out(inputs[0], self.strides)  # [batch_size,sum(_h*_w),class_num]
         cnt_logits, _ = self._reshape_cat_out(inputs[1], self.strides)  # [batch_size,sum(_h*_w),1]
         reg_preds, _ = self._reshape_cat_out(inputs[2], self.strides)  # [batch_size,sum(_h*_w),4]
@@ -105,11 +107,11 @@ class DetectHead(nn.Module):
         return self._post_process([cls_scores_topk, cls_classes_topk, boxes_topk])
 
     def _post_process(self, preds_topk):
-        '''
+        """
         cls_scores_topk [batch_size,max_num]
         cls_classes_topk [batch_size,max_num]
         boxes_topk [batch_size,max_num,4]
-        '''
+        """
         _cls_scores_post = []
         _cls_classes_post = []
         _boxes_post = []
@@ -131,10 +133,10 @@ class DetectHead(nn.Module):
 
     @staticmethod
     def box_nms(boxes, scores, thr):
-        '''
+        """
         boxes: [?,4]
         scores: [?]
-        '''
+        """
         if boxes.shape[0] == 0:
             return torch.zeros(0, device=boxes.device).long()
         assert boxes.shape[-1] == 4
@@ -237,12 +239,12 @@ class FCOSDetector(nn.Module):
             self.clip_boxes = ClipBoxes()
 
     def forward(self, inputs):
-        '''
-        inputs 
-        [training] list  batch_imgs,batch_boxes,batch_classes
-        [inference] img
-        '''
+        """
 
+        :param inputs: [training] list  batch_imgs,batch_boxes,batch_classes
+        [inference] img
+        :return:
+        """
         if self.mode == "training":
             batch_imgs, batch_boxes, batch_classes = inputs
             out = self.fcos_body(batch_imgs)

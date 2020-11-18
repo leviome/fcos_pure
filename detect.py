@@ -11,12 +11,12 @@ from matplotlib.ticker import NullLocator
 
 
 def preprocess_img(image, input_ksize):
-    '''
-    resize image and bboxes 
-    Returns
-    image_paded: input_ksize  
-    bboxes: [None,4]
-    '''
+    """
+    resize image and bboxes
+    :param image:
+    :param input_ksize:
+    :return:
+    """
     min_side, max_side = input_ksize
     h, w, _ = image.shape
 
