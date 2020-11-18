@@ -4,14 +4,12 @@ from .config import DefaultConfig
 
 
 def coords_fmap2orig(feature, stride):
-    '''
+    """
     transfor one fmap coords to orig coords
-    Args
-    featurn [batch_size,h,w,c]
-    stride int
-    Returns 
-    coords [n,2]
-    '''
+    :param feature: [batch_size,h,w,c]
+    :param stride: int
+    :return: coords [n,2]
+    """
     h, w = feature.shape[1:3]
     shifts_x = torch.arange(0, w * stride, stride, dtype=torch.float32)
     shifts_y = torch.arange(0, h * stride, stride, dtype=torch.float32)
@@ -31,7 +29,7 @@ class GenTargets(nn.Module):
         assert len(strides) == len(limit_range)
 
     def forward(self, inputs):
-        '''
+        """
         inputs  
         [0]list [cls_logits,cnt_logits,reg_preds]  
         cls_logits  list contains five [batch_size,class_num,h,w]  
@@ -43,7 +41,7 @@ class GenTargets(nn.Module):
         cls_targets:[batch_size,sum(_h*_w),1]
         cnt_targets:[batch_size,sum(_h*_w),1]
         reg_targets:[batch_size,sum(_h*_w),4]
-        '''
+        """
         cls_logits, cnt_logits, reg_preds = inputs[0]
         gt_boxes = inputs[1]
         classes = inputs[2]
@@ -63,16 +61,16 @@ class GenTargets(nn.Module):
             reg_targets_all_level, dim=1)
 
     def _gen_level_targets(self, out, gt_boxes, classes, stride, limit_range, sample_radiu_ratio=1.5):
-        '''
-        Args  
-        out list contains [[batch_size,class_num,h,w],[batch_size,1,h,w],[batch_size,4,h,w]]  
-        gt_boxes [batch_size,m,4]  
-        classes [batch_size,m]  
-        stride int  
-        limit_range list [min,max]  
-        Returns  
-        cls_targets,cnt_targets,reg_targets
-        '''
+        """
+
+        :param out: contains [[batch_size,class_num,h,w],[batch_size,1,h,w],[batch_size,4,h,w]]
+        :param gt_boxes: [batch_size,m,4]
+        :param classes: [batch_size,m]
+        :param stride: int
+        :param limit_range: [min,max]
+        :param sample_radiu_ratio: cls_targets,cnt_targets,reg_targets
+        :return:
+        """
         cls_logits, cnt_logits, reg_preds = out
         batch_size = cls_logits.shape[0]
         class_num = cls_logits.shape[1]
@@ -154,12 +152,12 @@ class GenTargets(nn.Module):
 
 
 def compute_cls_loss(preds, targets, mask):
-    '''
+    """
     Args  
     preds: list contains five level pred [batch_size,class_num,_h,_w]
     targets: [batch_size,sum(_h*_w),1]
     mask: [batch_size,sum(_h*_w)]
-    '''
+    """
     batch_size = targets.shape[0]
     preds_reshape = []
     class_num = preds[0].shape[1]
@@ -183,12 +181,12 @@ def compute_cls_loss(preds, targets, mask):
 
 
 def compute_cnt_loss(preds, targets, mask):
-    '''
+    """
     Args  
     preds: list contains five level pred [batch_size,1,_h,_w]
     targets: [batch_size,sum(_h*_w),1]
     mask: [batch_size,sum(_h*_w)]
-    '''
+    """
     batch_size = targets.shape[0]
     c = targets.shape[-1]
     preds_reshape = []
@@ -212,12 +210,12 @@ def compute_cnt_loss(preds, targets, mask):
 
 
 def compute_reg_loss(preds, targets, mask, mode='giou'):
-    '''
+    """
     Args  
     preds: list contains five level pred [batch_size,4,_h,_w]
     targets: [batch_size,sum(_h*_w),4]
     mask: [batch_size,sum(_h*_w)]
-    '''
+    """
     batch_size = targets.shape[0]
     c = targets.shape[-1]
     preds_reshape = []
@@ -244,11 +242,11 @@ def compute_reg_loss(preds, targets, mask, mode='giou'):
 
 
 def iou_loss(preds, targets):
-    '''
+    """
     Args:
     preds: [n,4] ltrb
     targets: [n,4]
-    '''
+    """
     lt = torch.min(preds[:, :2], targets[:, :2])
     rb = torch.min(preds[:, 2:], targets[:, 2:])
     wh = (rb + lt).clamp(min=0)
@@ -261,11 +259,11 @@ def iou_loss(preds, targets):
 
 
 def giou_loss(preds, targets):
-    '''
+    """
     Args:
     preds: [n,4] ltrb
     targets: [n,4]
-    '''
+    """
     lt_min = torch.min(preds[:, :2], targets[:, :2])
     rb_min = torch.min(preds[:, 2:], targets[:, 2:])
     wh_min = (rb_min + lt_min).clamp(min=0)
@@ -286,11 +284,14 @@ def giou_loss(preds, targets):
 
 
 def focal_loss_from_logits(preds, targets, gamma=2.0, alpha=0.25):
-    '''
-    Args:
-    preds: [n,class_num] 
-    targets: [n,class_num]
-    '''
+    """
+
+    :param preds: [n,class_num]
+    :param targets: [n,class_num]
+    :param gamma:
+    :param alpha:
+    :return:
+    """
     preds = preds.sigmoid()
     pt = preds * targets + (1.0 - preds) * (1.0 - targets)
     w = alpha * targets + (1.0 - alpha) * (1.0 - targets)
@@ -307,6 +308,11 @@ class LOSS(nn.Module):
             self.config = config
 
     def forward(self, inputs):
+        """
+
+        :param inputs:
+        :return:
+        """
         '''
         inputs list
         [0]preds:  ....
