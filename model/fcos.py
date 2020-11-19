@@ -8,7 +8,6 @@ from .config import DefaultConfig
 
 
 class FCOS(nn.Module):
-
     def __init__(self, config=None):
         super().__init__()
         if config is None:

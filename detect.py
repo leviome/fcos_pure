@@ -91,7 +91,7 @@ if __name__ == "__main__":
     # init model
     model = FCOSDetector(mode="inference", config=Config)
     model = torch.nn.DataParallel(model)
-    model.load_state_dict(torch.load("./checkpoint/voc_77.8.pth", map_location=torch.device('cpu')))
+    model.load_state_dict(torch.load("./checkpoint/fcos_pretrained_model.pth", map_location=torch.device('cpu')))
     model = model.eval()
     print("===>success loading model")
 
