@@ -20,9 +20,11 @@ class FCOS(nn.Module):
         self.config = config
 
     def train(self, mode=True):
-        '''
-        set module training mode, and frozen bn
-        '''
+        """
+        only for resnet50,101,152
+        :param mode:
+        :return:
+        """
         super().train(mode=True)
 
         def freeze_bn(module):
@@ -180,24 +182,24 @@ class DetectHead(nn.Module):
         return keep
 
     def _coords2boxes(self, coords, offsets):
-        '''
-        Args
-        coords [sum(_h*_w),2]
-        offsets [batch_size,sum(_h*_w),4] ltrb
-        '''
+        """
+
+        :param coords:[sum(_h*_w),2]
+        :param offsets:[batch_size,sum(_h*_w),4] ltrb
+        :return:
+        """
         x1y1 = coords[None, :, :] - offsets[..., :2]
         x2y2 = coords[None, :, :] + offsets[..., 2:]  # [batch_size,sum(_h*_w),2]
         boxes = torch.cat([x1y1, x2y2], dim=-1)  # [batch_size,sum(_h*_w),4]
         return boxes
 
     def _reshape_cat_out(self, inputs, strides):
-        '''
-        Args
-        inputs: list contains five [batch_size,c,_h,_w]
-        Returns
-        out [batch_size,sum(_h*_w),c]
-        coords [sum(_h*_w),2]
-        '''
+        """
+
+        :param inputs:list contains five [batch_size,c,_h,_w]
+        :param strides:[batch_size,sum(_h*_w),c]
+        :return:coords [sum(_h*_w),2]
+        """
         batch_size = inputs[0].shape[0]
         c = inputs[0].shape[1]
         out = []
