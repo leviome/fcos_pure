@@ -111,7 +111,7 @@ if __name__ == "__main__":
         end_t = time.time()
         cost_t = 1000 * (end_t - start_t)
         print("===>success processing img, cost time %.2f ms" % cost_t)
-        print(out)
+        # print(out)
         scores, classes, boxes = out
 
         # visualization
