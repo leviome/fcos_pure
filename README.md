@@ -12,7 +12,6 @@ you can download the pretrained model by **CSDN** to avoid annoying BaiduPan, cl
 after downloading **fcos_pretrained_model.pth**, please put it to folder 'checkpoint', and put the image you want for test to folder 'test_images'
 ```text
 python detect.py
-
 ```
 then, you can find results at 'out_images/':
 
