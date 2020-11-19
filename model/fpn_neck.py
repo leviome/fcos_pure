@@ -4,8 +4,9 @@ import math
 
 
 class FPN(nn.Module):
-    '''only for resnet50,101,152'''
-
+    """
+    only for resnet50,101,152
+    """
     def __init__(self, features=256, use_p5=True):
         super(FPN, self).__init__()
         self.prj_5 = nn.Conv2d(2048, features, kernel_size=1)
