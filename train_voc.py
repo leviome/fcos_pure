@@ -1,13 +1,15 @@
-from model.fcos import FCOSDetector
-import torch
-from dataset.VOC_dataset import VOCDataset
-import math, time
-from dataset.augment import Transforms
-import os
-import numpy as np
-import random
-import torch.backends.cudnn as cudnn
 import argparse
+import os
+import random
+import time
+
+import numpy as np
+import torch
+import torch.backends.cudnn as cudnn
+
+from dataset.VOC_dataset import VOCDataset
+from dataset.augment import Transforms
+from model.fcos import FCOSDetector
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--epochs", type=int, default=30, help="number of epochs")
