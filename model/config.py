@@ -1,4 +1,4 @@
-class DefaultConfig():
+class DefaultConfig:
     # backbone
     pretrained = True
     freeze_stage_1 = True

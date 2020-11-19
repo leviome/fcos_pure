@@ -1,13 +1,16 @@
-import cv2
-from model.fcos import FCOSDetector
-import torch
-from torchvision import transforms
-import numpy as np
-from dataset.VOC_dataset import VOCDataset
+import os
 import time
+
+import cv2
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
+import numpy as np
+import torch
 from matplotlib.ticker import NullLocator
+from torchvision import transforms
+
+from dataset.VOC_dataset import VOCDataset
+from model.fcos import FCOSDetector
 
 
 def preprocess_img(image, input_ksize):
@@ -36,22 +39,22 @@ def preprocess_img(image, input_ksize):
     return image_paded
 
 
-def convertSyncBNtoBN(module):
-    module_output = module
-    if isinstance(module, torch.nn.modules.batchnorm._BatchNorm):
-        module_output = torch.nn.BatchNorm2d(module.num_features,
-                                             module.eps, module.momentum,
-                                             module.affine,
-                                             module.track_running_stats)
-        if module.affine:
-            module_output.weight.data = module.weight.data.clone().detach()
-            module_output.bias.data = module.bias.data.clone().detach()
-        module_output.running_mean = module.running_mean
-        module_output.running_var = module.running_var
-    for name, child in module.named_children():
-        module_output.add_module(name, convertSyncBNtoBN(child))
-    del module
-    return module_output
+# def convertSyncBNtoBN(module):
+#     module_output = module
+#     if isinstance(module, torch.nn.modules.batchnorm._BatchNorm):
+#         module_output = torch.nn.BatchNorm2d(module.num_features,
+#                                              module.eps, module.momentum,
+#                                              module.affine,
+#                                              module.track_running_stats)
+#         if module.affine:
+#             module_output.weight.data = module.weight.data.clone().detach()
+#             module_output.bias.data = module.bias.data.clone().detach()
+#         module_output.running_mean = module.running_mean
+#         module_output.running_var = module.running_var
+#     for name, child in module.named_children():
+#         module_output.add_module(name, convertSyncBNtoBN(child))
+#     del module
+#     return module_output
 
 
 if __name__ == "__main__":
@@ -59,7 +62,7 @@ if __name__ == "__main__":
     colors = [cmap(i) for i in np.linspace(0, 1, 20)]
 
 
-    class Config():
+    class Config:
         # backbone
         pretrained = False
         freeze_stage_1 = True
@@ -85,18 +88,12 @@ if __name__ == "__main__":
         nms_iou_threshold = 0.4
         max_detection_boxes_num = 300
 
-
+    # init model
     model = FCOSDetector(mode="inference", config=Config)
-    # model=torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
-    # print("INFO===>success convert BN to SyncBN")
     model = torch.nn.DataParallel(model)
     model.load_state_dict(torch.load("./checkpoint/voc_77.8.pth", map_location=torch.device('cpu')))
-    # model=convertSyncBNtoBN(model)
-    # print("INFO===>success convert SyncBN to BN")
     model = model.eval()
     print("===>success loading model")
-
-    import os
 
     root = "./test_images/"
     names = os.listdir(root)
@@ -114,9 +111,10 @@ if __name__ == "__main__":
         end_t = time.time()
         cost_t = 1000 * (end_t - start_t)
         print("===>success processing img, cost time %.2f ms" % cost_t)
-        # print(out)
+        print(out)
         scores, classes, boxes = out
 
+        # visualization
         boxes = boxes[0].cpu().numpy().tolist()
         classes = classes[0].cpu().numpy().tolist()
         scores = scores[0].cpu().numpy().tolist()
