@@ -1,6 +1,8 @@
 ## Pure implementation of FCOS
 Paper: [FCOS:Fully Convolutional One-Stage Object Detection](https://openaccess.thecvf.com/content_ICCV_2019/papers/Tian_FCOS_Fully_Convolutional_One-Stage_Object_Detection_ICCV_2019_paper.pdf)(ICCV 2019)
 
+FCOS is recognized as a nice anchor-free, one-stage detector because of its simple structure and high efficiency. This repo is aimed to reach fast, pure implementation for FCOS. All of you can develop algorithm based on this repo.
+
 ![imgs](https://github.com/leviome/fcos_pure/blob/main/assets/FCOS.jpg)
 
 ---
