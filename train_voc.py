@@ -31,7 +31,7 @@ train_dataset = VOCDataset(root_dir='/Users/VOC0712', resize_size=[800, 1333],
 
 model = FCOSDetector(mode="training").cuda()
 model = torch.nn.DataParallel(model)
-# model.load_state_dict(torch.load('/mnt/cephfs_new_wj/vc/zhangzhenghao/FCOS.Pytorch/output1/model_6.pth'))
+# model.load_state_dict(torch.load('/checkpoint/fcos_pretrained_model.pth'))
 
 BATCH_SIZE = opt.batch_size
 EPOCHS = opt.epochs
