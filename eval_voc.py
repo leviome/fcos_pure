@@ -129,7 +129,6 @@ def eval_ap_2d(gt_boxes, gt_labels, pred_boxes, pred_labels, pred_scores, iou_th
 
 if __name__ == "__main__":
     from model.fcos import FCOSDetector
-    from demo import convertSyncBNtoBN
     from dataset.VOC_dataset import VOCDataset
 
     eval_dataset = VOCDataset(root_dir='/Users/zhangzhenghao/VOC0712', resize_size=[800, 1333],

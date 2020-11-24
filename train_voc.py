@@ -93,7 +93,8 @@ for epoch in range(EPOCHS):
         end_time = time.time()
         cost_time = int((end_time - start_time) * 1000)
         print(
-            "global_steps:%d epoch:%d steps:%d/%d cls_loss:%.4f cnt_loss:%.4f reg_loss:%.4f cost_time:%dms lr=%.4e total_loss:%.4f" % \
+            "global_steps:%d epoch:%d steps:%d/%d cls_loss:%.4f cnt_loss:%.4f reg_loss:%.4f "
+            "cost_time:%dms lr=%.4e total_loss:%.4f" %
             (GLOBAL_STEPS, epoch + 1, epoch_step + 1, steps_per_epoch, losses[0].mean(), losses[1].mean(),
              losses[2].mean(), cost_time, lr, loss.mean()))
 
