@@ -1,13 +1,15 @@
-from model.fcos import FCOSDetector
-import torch
-from dataset.COCO_dataset import COCODataset
-import math, time
-from dataset.augment import Transforms
-import os
-import numpy as np
-import random
-import torch.backends.cudnn as cudnn
 import argparse
+import os
+import random
+import time
+
+import numpy as np
+import torch
+import torch.backends.cudnn as cudnn
+
+from dataset.COCO_dataset import COCODataset
+from dataset.augment import Transforms
+from model.fcos import FCOSDetector
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--epochs", type=int, default=24, help="number of epochs")

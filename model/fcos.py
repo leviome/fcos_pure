@@ -242,7 +242,7 @@ class FCOSDetector(nn.Module):
     def forward(self, inputs):
         """
 
-        :param inputs: [training] list  batch_imgs,batch_boxes,batch_classes
+        :param inputs: [training] list  batch_imgs, batch_boxes, batch_classes
         [inference] img
         :return:
         """
