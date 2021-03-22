@@ -13,8 +13,8 @@ from model.fcos import FCOSDetector
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--epochs", type=int, default=24, help="number of epochs")
-parser.add_argument("--batch_size", type=int, default=16, help="size of each image batch")
-parser.add_argument("--n_cpu", type=int, default=4, help="number of cpu threads to use during batch generation")
+parser.add_argument("--batch_size", type=int, default=8, help="size of each image batch")
+parser.add_argument("--n_cpu", type=int, default=8, help="number of cpu threads to use during batch generation")
 parser.add_argument("--n_gpu", type=str, default='0,1,2,3', help="number of cpu threads to use during batch generation")
 opt = parser.parse_args()
 os.environ["CUDA_VISIBLE_DEVICES"] = opt.n_gpu
@@ -26,14 +26,14 @@ cudnn.benchmark = False
 cudnn.deterministic = True
 random.seed(0)
 transform = Transforms()
-train_dataset = COCODataset("./Users/Downloads/train2017",
-                            '/Users/Downloads/coco2017/instances_train2017.json', transform=transform)
+train_dataset = COCODataset('./data/train2017/',
+                            './data/annotations/instances_train2017.json', transform=transform)
 
 model = FCOSDetector(mode="training").cuda()
 model = torch.nn.DataParallel(model)
 BATCH_SIZE = opt.batch_size
 EPOCHS = opt.epochs
-train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True,
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=4, shuffle=True,
                                            collate_fn=train_dataset.collate_fn,
                                            num_workers=opt.n_cpu, worker_init_fn=np.random.seed(0))
 steps_per_epoch = len(train_dataset) // BATCH_SIZE

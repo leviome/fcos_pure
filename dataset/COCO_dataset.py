@@ -1,10 +1,11 @@
-from torchvision.datasets import CocoDetection
-import torch
-import numpy as np
-from torchvision import transforms
-import cv2
-from PIL import Image
 import random
+
+import cv2
+import numpy as np
+import torch
+from PIL import Image
+from torchvision import transforms
+from torchvision.datasets import CocoDetection
 
 
 def flip(img, boxes):
